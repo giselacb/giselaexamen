@@ -1,14 +1,12 @@
 function crearentre() {
 	read -p "Dame el nombre: " nom
-	if [ $nom -ne 0 ] && [["$userx" == "root]] ;then
-		read -p "Dame la primera valoración del jugador: " va1
-		read -p "Dame la segunda valoración del jugador: " va2
-		read -p "Dame la tercera valoración del jugador: " va3
+	if [ $nom -ne 0 ] && [["$userx" == "root]] ;thenador: " va3
 		sudo useradd -g entrenadores -d /home/$nom -c "$va1,$va2,$va3" $nom 
 	
 		creanrentre
 	elif [ $nom -ne 0 ] && [ $grupoen -ge 1 ] ;then
-		sudo useradd -g jugadores -d /home/$nom $nom
+		read -p "Dime su equipo: " equipo
+		sudo useradd -g jugadores -d /home/$equipo/$nom $nom
 		creanrentr
 	fi 
 	
@@ -62,6 +60,14 @@ elif [ $grupoen -ge 1 ]; then
 			echo "Las valoraciones de $valonom son $valora"
 		;;
 		share)
+			numero="00"
+			read -p "Dime el fichero que deseas compartir: " fiche
+			read -p "Dime el nombre del jugador con el que quieres compartir: " nomjuga
+			read -p "Dime su equipo: " equi
+			read -p "Dime si quieres que tenga lectura y escritura (6) o solo lectura (4): " permisos
+			sudo find $HOME -name "$fiche.txt" -exec cp {} /home/$equi/$nomjuga \; | sudo chown $nomjuga | chmod $permisos$numero /home/$equi/$nomjuga/$fiche.txt
+			
+			
 	esac
 		
 		
@@ -86,7 +92,14 @@ elif [ $grupoju -ge 1 ]; then
 			echo "Tu media es de $medi"
 		;;
 		edit)
-			
+			read -p "Dime el fichero que quieres editar o ver: " fichedi
+			read -p "Dime si quieres verlo (v)o editarlo (e): " hace
+			if [ -r $fiche ] && [[ "$hace" -eq "v" ]]; then
+				cat $fichedi
+			elif [ -w $fiche ] && [[ "$hace" -eq "e" ]]; then
+				nano $fiche
+			fi
+				 
 		esac
 
 fi
