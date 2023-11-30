@@ -2,14 +2,19 @@ function crearentre() {
 	read -p "Dame el nombre: " nom
 	if [ $nom -ne 0 ] && [["$userx" == "root]] ;thenador: " va3
 		sudo useradd -g entrenadores -d /home/$nom -c "$va1,$va2,$va3" $nom 
+		echo "El director añadió a $nom $(DATE)" >> ediciones.log 
 	
 		creanrentre
+
+
 	elif [ $nom -ne 0 ] && [ $grupoen -ge 1 ] ;then
 		read -p "Dime su equipo: " equipo
 		sudo useradd -g jugadores -d /home/$equipo/$nom $nom
+		echo "El $userx añadió a $nom $(DATE) con el equipo $nom" >> ediciones.log 
+
 		creanrentr
 	fi 
-	
+
 }
 
 userx=$(whoami)
@@ -19,16 +24,19 @@ idju=$(cat /etc/group | grep jugadores | cut -d ":" -f3)
 iden=$(cat /etc/group | grep entrenadores | cut -d ":" -f3)
 
 #Los jugadores y entrenadores pertenecen al grupo jugadores o entrenadores, en caso de que las variables grupoen/ju den 1 es porque o son entrenadores o jugadores y ya se meten por su if correspondiente 
+
 if [[ "$userx" == "root" ]]; then 
 	read -p "¿Qué quieres hacer? visualizar jugadores (j), visualizar entrenadores (e), añadir entrenadores (adden)" hacer
 	case $hacer in 
 
 		j)
 			echo "Los jugadores son $(cat /etc/passwd | grep $idju | cut -d ":" -f1)"
+			echo "El director visualizó a los jugadores $(DATE)" >> ediciones.log 
 
 		;;
 		e)
 			echo "Los entrenadores son $(cat /etc/passwd | grep $iden | cut -d ":" -f1)"
+			echo "El director visualizó a los entrenadores $(DATE)" >> ediciones.log 
 
 		;;
 		adden)
@@ -45,6 +53,7 @@ elif [ $grupoen -ge 1 ]; then
 	case $hacer in
 		j)
 			echo "Los jugadores son $(cat /etc/passwd | grep $idju | cut -d ":" -f1)"
+			echo "El $userx visualizó a los jugadores $(DATE)" >> ediciones.log 
 
 		;;
 
@@ -58,6 +67,8 @@ elif [ $grupoen -ge 1 ]; then
 			read -p "Dime el nombre del jugador del cual quieres ver las valoraciones: " valonom
 			valora=$(cat /etc/passwd | grep -w $valonom | cut -d ":" -f5)
 			echo "Las valoraciones de $valonom son $valora"
+			echo "El $userx visualizó a la valoración de $valonom $(DATE)" >> ediciones.log 
+
 		;;
 		share)
 			numero="00"
@@ -66,8 +77,7 @@ elif [ $grupoen -ge 1 ]; then
 			read -p "Dime su equipo: " equi
 			read -p "Dime si quieres que tenga lectura y escritura (6) o solo lectura (4): " permisos
 			sudo find $HOME -name "$fiche.txt" -exec cp {} /home/$equi/$nomjuga \; | sudo chown $nomjuga | chmod $permisos$numero /home/$equi/$nomjuga/$fiche.txt
-			
-			
+			echo "El $userx compartió $fiche con $nomjuga del equipo $equi $(DATE)" >> ediciones.log 			
 	esac
 		
 		
@@ -80,6 +90,8 @@ elif [ $grupoju -ge 1 ]; then
 		seev)
 			valora=$(cat /etc/passwd | grep -w $userx | cut -d ":" -f5)
 			echo "Tus valoraciones son $valora"
+			echo "El $userx visualizó sus valoraciones $(DATE)" >> ediciones.log 
+
 
 		;;
 
@@ -90,6 +102,8 @@ elif [ $grupoju -ge 1 ]; then
 			resul=$(($v1+$v2+$v3))
 			medi=$(($resul/3))
 			echo "Tu media es de $medi"
+			echo "El $userx vio su medioa $(DATE)" >> ediciones.log 
+
 		;;
 		edit)
 			read -p "Dime el fichero que quieres editar o ver: " fichedi
@@ -99,7 +113,8 @@ elif [ $grupoju -ge 1 ]; then
 			elif [ -w $fiche ] && [[ "$hace" -eq "e" ]]; then
 				nano $fiche
 			fi
-				 
+			echo "$userx editó o vió el fichero $fichedi $(DATE)" >> ediciones.log 
+
 		esac
 
 fi
