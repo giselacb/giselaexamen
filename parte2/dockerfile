@@ -1,0 +1,4 @@
+FROM nginex:latest as gisela 
+copy *.sh /usr/share/nginex/html/
+
+run apt-get update && apt-get install -y nano 
